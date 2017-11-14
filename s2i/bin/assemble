@@ -27,8 +27,11 @@ pwd
 DEPLOY_DIR=/usr/local/tomee/webapps
 echo "---> Set TomEE target directory to $DEPLOY_DIR ..."
 
-echo "---> Copying application source ..."
 cp -Rf /tmp/src/. ./
+echo "---> Copied application source to $HOME ..."
+
+echo "---> Listing home directory contents ..."
+ls -la $HOME
 
 if [ -d $HOME/configuration ]; then
   echo "---> Copying config files from project ..."
@@ -41,10 +44,12 @@ fi
 
 # Manage incremental builds.
 if [ -d /tmp/artifacts ]; then
-  echo "--> Expanding artifacts from incremental build..."
+  echo "--> Expanding artifacts from incremental build ..."
   ( cd /tmp/artifacts && tar cf - . ) | ( cd ${HOME} && tar xvf - )
   rm -rf /tmp/artifacts
 fi
+
+echo "---> Starting build phase ..."
 
 # If a pom.xml is present, this is a normal build scenario
 # so run maven.
