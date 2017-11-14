@@ -33,6 +33,9 @@ echo "---> Copied application source to $HOME ..."
 echo "---> Listing home directory contents ..."
 ls -la $HOME
 
+echo "---> Listing TomEE directory contents ..."
+ls -l $CATALINA_HOME
+
 if [ -d $HOME/configuration ]; then
   echo "---> Copying config files from project ..."
 
@@ -88,6 +91,6 @@ else
   # For binary builds
   # Copy all artifacts (*.war ...) to DEPLOY_DIR
   echo "--> Copying application binary artifacts to $DEPLOY_DIR ..."
-  cp $HOME/ $DEPLOY_DIR 2> /dev/null
+  cp -Rfv $HOME/ $DEPLOY_DIR 2> /dev/null
 fi
 echo "--> S2I:assemble step complete ..."
