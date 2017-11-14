@@ -1,5 +1,5 @@
 #!/bin/bash -e
-#
+# ID:11-13-2017
 # S2I assemble script for the 'tomee7-wp-centos7' image.
 # The 'assemble' script builds your application source so that it is ready to run.
 #
@@ -21,12 +21,11 @@ fi
 
 echo "---> Starting Java web application build process ..."
 echo "---> Application source directory is set to $HOME ..."
+echo "---> Current directory ..."
+pwd
 
 DEPLOY_DIR=/usr/local/tomee/webapps
 echo "---> Set TomEE target directory to $DEPLOY_DIR ..."
-
-echo "---> Current directory ..."
-pwd
 
 echo "---> Copying application source ..."
 cp -Rf /tmp/src/. ./

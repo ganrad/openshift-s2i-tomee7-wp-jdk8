@@ -1,4 +1,4 @@
-# s2i-java : 11-13-2017
+# s2i-java : ID:11-13-2017
 # tomee7-wp-centos7
 FROM openshift/base-centos7
 MAINTAINER Ganesh Radhakrishnan ganrad01@gmail.com
@@ -14,7 +14,6 @@ LABEL io.k8s.description="Platform for building Java Web apps (WAR) with Maven a
 
 # Install required util packages.
 RUN yum -y update; \
-    yum install wget -y; \
     yum install tar -y; \
     yum install unzip -y; \
     yum install ca-certificates -y; \
