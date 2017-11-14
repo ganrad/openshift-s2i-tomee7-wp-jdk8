@@ -87,6 +87,6 @@ if [ -f "$HOME/pom.xml" ]; then
 else
   # For binary builds
   # Copy all artifacts (*.war ...) to DEPLOY_DIR
-
+  echo "--> Copying application binary artifacts to $DEPLOY_DIR ..."
   cp $HOME/ $DEPLOY_DIR 2> /dev/null
 fi
