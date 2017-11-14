@@ -25,8 +25,8 @@ echo "---> Application source directory is set to $HOME ..."
 DEPLOY_DIR=/usr/local/tomee/webapps
 echo "---> Set TomEE target directory to $DEPLOY_DIR ..."
 
-echo "---> Switching to home directory ..."
-cd $HOME
+echo "---> Current directory ..."
+pwd
 
 echo "---> Copying application source ..."
 cp -Rf /tmp/src/. ./
@@ -38,6 +38,13 @@ if [ -d $HOME/configuration ]; then
     mkdir -p $HOME/.m2
     mv $HOME/configuration/settings.xml $HOME/.m2
   fi
+fi
+
+# Manage incremental builds.
+if [ -d /tmp/artifacts ]; then
+  echo "--> Expanding artifacts from incremental build..."
+  ( cd /tmp/artifacts && tar cf - . ) | ( cd ${HOME} && tar xvf - )
+  rm -rf /tmp/artifacts
 fi
 
 # If a pom.xml is present, this is a normal build scenario

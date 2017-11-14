@@ -24,31 +24,30 @@ RUN yum -y update; \
 # Install OpenJDK 1.8, create required directories.
 RUN yum install java-1.8.0-openjdk.x86_64* -y && \
     yum clean all -y && \
-    mkdir -p /usr/local/tomee && \
+    mkdir -p /usr/local/tomee && chmod -R a+rwX /usr/local/tomee && \
     mkdir -p /opt/app-root/src && chmod -R a+rwX /opt/app-root/src
-
-# Set Catalina home
-ENV CATALINA_HOME /usr/local/tomee
 
 # Install Maven 3.5.2
 ENV MAVEN_VERSION 3.5.2
-RUN (curl -0 http://ftp.wayne.edu/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | \
+RUN (curl -fSL http://ftp.wayne.edu/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | \
     tar -zx -C /usr/local) && \
     mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven && \
     ln -sf /usr/local/maven/bin/mvn /usr/local/bin/mvn && \
     mkdir -p $HOME/.m2 && chmod -R a+rwX $HOME/.m2
 
-# Change working directory
-WORKDIR /usr/local/tomee
+# Set the location of the mvn binary on search path
+ENV PATH=/usr/local/bin/mvn:$PATH
 
 # Install Apache TomEE 7.0.3 WP
-RUN wget -q -e use-proxy=yes https://repo.maven.apache.org/maven2/org/apache/tomee/apache-tomee/7.0.3/apache-tomee-7.0.3-webprofile.tar.gz -o tomee.tar.gz \
-        && tar -zxf tomee.tar.gz \
-        && mv apache-tomee-webprofile-7.0.3/* /usr/local/tomee \
-	&& rm -Rf apache-tomee-webprofile-7.0.3 \
-	&& rm bin/*.bat \
+RUN (curl -fSL https://repo.maven.apache.org/maven2/org/apache/tomee/apache-tomee/7.0.3/apache-tomee-7.0.3-webprofile.tar.gz | \
+        && tar -zx -C /usr/local/tomee) \
+        && mv /usr/local/tomee/apache-tomee-webprofile-7.0.3/* /usr/local/tomee \
+	&& rm -Rf /usr/local/tomee/apache-tomee-webprofile-7.0.3 \
+	&& rm /usr/local/tomee/bin/*.bat \
         && mkdir -p /usr/local/tomee/webapps
-	&& rm tomee.tar.gz*
+
+# Set Catalina home
+ENV CATALINA_HOME /usr/local/tomee
 
 # Copy the S2I scripts to /usr/libexec/s2i, since openshift/base-centos7 image
 # sets io.openshift.s2i.scripts-url label that way, or update that label
