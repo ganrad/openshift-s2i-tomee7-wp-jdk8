@@ -59,7 +59,7 @@ RUN chown -R 1001:1001 /opt/app-root /usr/local/tomee
 USER 1001
 
 # Set the default port for applications built using this image
-# EXPOSE 8080
+EXPOSE 8080
 
 # Set the default CMD for the image
-# CMD ["/usr/libexec/s2i/usage"]
+CMD ["/usr/libexec/s2i/usage"]
