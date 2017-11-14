@@ -90,3 +90,4 @@ else
   echo "--> Copying application binary artifacts to $DEPLOY_DIR ..."
   cp $HOME/ $DEPLOY_DIR 2> /dev/null
 fi
+echo "--> S2I:assemble step complete ..."
