@@ -38,8 +38,7 @@ RUN (curl -fSL http://ftp.wayne.edu/apache/maven/maven-3/$MAVEN_VERSION/binaries
 ENV PATH=/usr/local/bin/mvn:$PATH
 
 # Install Apache TomEE 7.0.3 WP
-RUN (curl -fSL https://repo.maven.apache.org/maven2/org/apache/tomee/apache-tomee/7.0.3/apache-tomee-7.0.3-webprofile.tar.gz | \
-        && tar -zx -C /usr/local/tomee) \
+RUN (curl -fSL https://repo.maven.apache.org/maven2/org/apache/tomee/apache-tomee/7.0.3/apache-tomee-7.0.3-webprofile.tar.gz | tar -zx -C /usr/local/tomee) \
         && mv /usr/local/tomee/apache-tomee-webprofile-7.0.3/* /usr/local/tomee \
 	&& rm -Rf /usr/local/tomee/apache-tomee-webprofile-7.0.3 \
 	&& rm /usr/local/tomee/bin/*.bat \
