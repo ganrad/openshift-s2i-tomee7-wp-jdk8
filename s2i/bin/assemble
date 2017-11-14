@@ -1,0 +1,81 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'tomee7-wp-centos7' image.
+# The 'assemble' script builds your application source so that it is ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+# If the 'tomee7-wp-centos7' assemble script is executed with the '-h' flag, print the usage.
+if [[ "$1" == "-h" ]]; then
+	exec /usr/libexec/s2i/usage
+fi
+
+# Restore artifacts from the previous build (if they exist).
+#
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "---> Restoring build artifacts..."
+  mv /tmp/artifacts/. ./
+fi
+
+echo "---> Starting Java web application build process ..."
+echo "---> Application source directory is set to $HOME ..."
+
+DEPLOY_DIR=/usr/local/tomee/webapps
+echo "---> Set TomEE target directory to $DEPLOY_DIR ..."
+
+echo "---> Switching to home directory ..."
+cd $HOME
+
+echo "---> Copying application source ..."
+cp -Rf /tmp/src/. ./
+
+if [ -d $HOME/configuration ]; then
+  echo "---> Copying config files from project ..."
+
+  if [ -f $HOME/configuration/settings.xml ]; then
+    mkdir -p $HOME/.m2
+    mv $HOME/configuration/settings.xml $HOME/.m2
+  fi
+fi
+
+# If a pom.xml is present, this is a normal build scenario
+# so run maven.
+if [ -f "$HOME/pom.xml" ]; then
+  echo "---> Building application from source using Maven ..."
+
+  MAVEN_ARGS="package -DskipTests"
+
+  # Always force IPv4 (CLOUD-188)
+  # Append user-supplied arguments (CLOUD-412)
+  MAVEN_ARGS="$MAVEN_ARGS -Djava.net.preferIPv4Stack=true ${MAVEN_ARGS_APPEND}"
+
+  echo "--> Found pom.xml... attempting to build with 'mvn ${MAVEN_ARGS}'"
+
+  echo "--> Using $(mvn --version)"
+
+  # Execute the actual build
+  mvn $MAVEN_ARGS
+
+  ERR=$?
+  if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from Maven build"
+    exit $ERR
+  fi
+
+  # Copy built artifacts (if any!) from the target/ directory
+  # to the $DEPLOY_DIR directory for later deployment
+  cp -rfv $HOME/target/*.* $DEPLOY_DIR 2> /dev/null
+
+  # optionally clear the local maven repository after the build
+  mcr=$(echo "${MAVEN_CLEAR_REPO}" | tr [:upper:] [:lower:])
+  if [ "${mcr}" = "true" ]; then
+    rm -rf ${HOME}/.m2/repository/*
+  fi
+else
+  # For binary builds
+  # Copy all artifacts (*.war ...) to DEPLOY_DIR
+
+  cp $HOME/ $DEPLOY_DIR 2> /dev/null
+fi
