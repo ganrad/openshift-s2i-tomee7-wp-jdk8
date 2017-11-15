@@ -93,6 +93,6 @@ else
   # For binary builds
   # Copy all artifacts (*.war ...) to DEPLOY_DIR
   echo "--> Copying application binary artifacts to $DEPLOY_DIR ..."
-  cp -Rfv $HOME/*.* $DEPLOY_DIR 2> /dev/null
+  cp -v $HOME/*.* $DEPLOY_DIR 2> /dev/null
 fi
 echo "--> S2I:assemble step end ..."
