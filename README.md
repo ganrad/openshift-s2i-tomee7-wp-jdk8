@@ -1,5 +1,5 @@
 
-# Creating a Apache TomEE 7.0.3 Web Profile S2I builder image  
+# Create a Apache TomEE 7.0.3 Web Profile S2I builder image for OpenShift CP v3.6+
 
 ## Getting started  
 
@@ -36,7 +36,7 @@ The *save-artifacts* script allows a new build to reuse content (dependencies) f
 ##### usage (optional) 
 The *usage* script prints out instructions on how to use the Apache TomEE S2I builder image in order to produce an **application container image**.
 
-#### Create the S2I builder image
+#### Create the Apache TomEE v7.0.3 Web Profile S2I builder image
 The following command will create a S2I builder image named tomee7-wp-jdk8 based on the Dockerfile.
 ```
 docker build -t tomee7-wp-jdk8 .
@@ -55,8 +55,13 @@ The builder image can also be tested by using the *make test* command since a *M
 
 #### Creating the application container image
 The application container image combines the builder image with application source code, which is served using application server (Apache TomEE) installed via the *Dockerfile*, compiled using the *assemble* script, and run using the *run* script.
-The following command will create the **application container image**:
-**Usage: s2i build <location of source code> <S2I builder image name> <application container image name>**
+The following command will create the application container image:
+
+**Usage:**
+```
+s2i build <location of source code> <S2I builder image name> <application container image name>
+```
+
 ```
 s2i build test/test-app tomee7-wp-jdk8 tomee7-wp-jdk8-app
 ---> Building and installing application from source...
@@ -77,4 +82,4 @@ s2i build --incremental=true test/test-app tomee7-wp-jdk8 tomee7-wp-jdk8-app
 ---> Restoring build artifacts...
 ---> Building and installing application from source...
 ```
-This will run the *save-artifacts* script which includes the code to backup the currently running application dependencies. When the application container imageis built next time, the saved application dependencies will be re-used to build the application.
+This will run the *save-artifacts* script which includes the code to backup the currently running application dependencies. When the application container image is built next time, the saved application dependencies will be re-used to build the application.
