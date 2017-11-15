@@ -54,7 +54,7 @@ if [ -d /tmp/artifacts ]; then
   rm -rf /tmp/artifacts
 fi
 
-echo "---> Starting build phase ..."
+echo "--> S2I:assemble step build ..."
 
 # If a pom.xml is present, this is a normal build scenario
 # so run maven.
@@ -95,4 +95,4 @@ else
   echo "--> Copying application binary artifacts to $DEPLOY_DIR ..."
   cp -Rfv $HOME/*.* $DEPLOY_DIR 2> /dev/null
 fi
-echo "--> S2I:assemble step complete ..."
+echo "--> S2I:assemble step end ..."
