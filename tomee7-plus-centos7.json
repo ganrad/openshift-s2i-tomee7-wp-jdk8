@@ -101,11 +101,13 @@
         "triggers": [
           {
             "github": {
+		"secret": "secret"
             },
             "type": "GitHub"
           },
           {
             "generic": {
+		"secret": "secret"
             },
             "type": "Generic"
           },
