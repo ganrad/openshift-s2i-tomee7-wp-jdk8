@@ -1,15 +1,85 @@
 #!/bin/bash -e
 # ID:11-13-2017
-# S2I assemble script for the 'tomee7-wp-centos7' image.
+# ID:12-06-2017: Updated the script to detect build type and execute maven or gradle build.
+#
+# S2I assemble script for the 'tomee7-plus-centos7' image.
 # The 'assemble' script builds your application source so that it is ready to run.
 #
 # For more information refer to the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
+execute_maven_build()
+{
+  echo "---> Building application from source using Maven ..."
+
+  MAVEN_ARGS="package -DskipTests"
+
+  # Always force IPv4 (CLOUD-188)
+  # Append user-supplied arguments (CLOUD-412)
+  MAVEN_ARGS="$MAVEN_ARGS -Djava.net.preferIPv4Stack=true ${MAVEN_ARGS_APPEND}"
+
+  echo "--> Found pom.xml... attempting to build with 'mvn ${MAVEN_ARGS}'"
+
+  echo "--> Using $(mvn --version)"
+
+  # Execute the actual build
+  mvn $MAVEN_ARGS
+
+  ERR=$?
+  if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from Maven build"
+    exit $ERR
+  fi
+
+  # Copy built artifacts (if any!) from the target/ directory
+  # to the $DEPLOY_DIR directory for later deployment
+  cp -rfv $HOME/target/*.* $DEPLOY_DIR 2> /dev/null
+
+  # optionally clear the local maven repository after the build
+  mcr=$(echo "${MAVEN_CLEAR_REPO}" | tr [:upper:] [:lower:])
+  if [ "${mcr}" = "true" ]; then
+    rm -rf ${HOME}/.m2/repository/*
+  fi
+}
+
+execute_gradle_build()
+{
+  echo "---> Building application from source using Gradle ..."
+
+  GRADLE_ARGS="assemble"
+
+  # Always force IPv4 (CLOUD-188)
+  # Append user-supplied arguments (CLOUD-412)
+  GRADLE_ARGS="$GRADLE_ARGS ${GRADLE_ARGS_APPEND}"
+
+  echo "--> Found build.gradle... attempting to build with 'gradle ${GRADLE_ARGS}'"
+
+  echo "--> Using $(gradle --version)"
+
+  # Execute the actual build
+  gradle $GRADLE_ARGS
+
+  ERR=$?
+  if [ $ERR -ne 0 ]; then
+    echo "Aborting due to error code $ERR from Gradle build"
+    exit $ERR
+  fi
+
+  # Copy built artifacts (if any!) from the build/libs directory
+  # to the $DEPLOY_DIR directory for later deployment
+  cp -v $HOME/build/libs/*.* $DEPLOY_DIR 2> /dev/null
+
+  # optionally clear the local gradle repository after the build
+  gcr=$(echo "${GRADLE_CLEAR_REPO}" | tr [:upper:] [:lower:])
+  if [ "${gcr}" = "true" ]; then
+    rm -rf ${HOME}/.gradle/caches/*
+  fi
+}
+
 echo "--> S2I:assemble step start ..."
 
-# If the 'tomee7-wp-centos7' assemble script is executed with the '-h' flag, print the usage.
+# If the 'tomee7-plus-centos7' assemble script is executed with the '-h' flag, print the usage.
 if [[ "$1" == "-h" ]]; then
 	exec /usr/libexec/s2i/usage
 fi
@@ -55,44 +125,18 @@ if [ -d /tmp/artifacts ]; then
 fi
 
 echo "--> S2I:assemble step build ..."
+echo "--> Build type=$BUILD_TYPE ..."
 
-# If a pom.xml is present, this is a normal build scenario
-# so run maven.
-if [ -f "$HOME/pom.xml" ]; then
-  echo "---> Building application from source using Maven ..."
-
-  MAVEN_ARGS="package -DskipTests"
-
-  # Always force IPv4 (CLOUD-188)
-  # Append user-supplied arguments (CLOUD-412)
-  MAVEN_ARGS="$MAVEN_ARGS -Djava.net.preferIPv4Stack=true ${MAVEN_ARGS_APPEND}"
-
-  echo "--> Found pom.xml... attempting to build with 'mvn ${MAVEN_ARGS}'"
-
-  echo "--> Using $(mvn --version)"
-
-  # Execute the actual build
-  mvn $MAVEN_ARGS
-
-  ERR=$?
-  if [ $ERR -ne 0 ]; then
-    echo "Aborting due to error code $ERR from Maven build"
-    exit $ERR
-  fi
-
-  # Copy built artifacts (if any!) from the target/ directory
-  # to the $DEPLOY_DIR directory for later deployment
-  cp -rfv $HOME/target/*.* $DEPLOY_DIR 2> /dev/null
-
-  # optionally clear the local maven repository after the build
-  mcr=$(echo "${MAVEN_CLEAR_REPO}" | tr [:upper:] [:lower:])
-  if [ "${mcr}" = "true" ]; then
-    rm -rf ${HOME}/.m2/repository/*
-  fi
+# If a pom.xml or build.gradle file is present, this is a normal build scenario
+# so run maven or gradle.
+if [ $BUILD_TYPE = "Maven" ] && [ -f "$HOME/pom.xml" ]; then
+  execute_maven_build
+elif [ $BUILD_TYPE = "Gradle" ] && [ -f "$HOME/build.gradle" ]; then
+  execute_gradle_build
 else
-  # For binary builds
-  # Copy all artifacts (*.war ...) to DEPLOY_DIR
+  # For binary builds, copy all artifacts (*.war,*.ear) to DEPLOY_DIR
   echo "--> Copying application binary artifacts to $DEPLOY_DIR ..."
-  cp -v $HOME/*.* $DEPLOY_DIR 2> /dev/null
+  cp -v $HOME/*.war $DEPLOY_DIR 2> /dev/null
+  cp -v $HOME/*.ear $DEPLOY_DIR 2> /dev/null
 fi
 echo "--> S2I:assemble step end ..."
