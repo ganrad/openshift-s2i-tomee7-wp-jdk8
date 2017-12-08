@@ -92,7 +92,7 @@
 	    "env": [
 		{
 		  "name": "BUILD_TYPE",
-		  "value": "${BUILD_TYPE}
+		  "value": "${BUILD_TYPE}"
 		}
 	    ]
           },
