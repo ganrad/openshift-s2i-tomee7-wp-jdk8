@@ -47,6 +47,7 @@ RUN (curl -fSL http://ftp.wayne.edu/apache/maven/maven-3/$MAVEN_VERSION/binaries
 ENV GRADLE_VERSION 4.4
 RUN curl -fSL https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip -o /tmp/gradle-$GRADLE_VERSION-bin.zip && \
     unzip /tmp/gradle-$GRADLE_VERSION-bin.zip -d /usr/local/ && \
+    rm /tmp/gradle-$GRADLE_VERSION-bin.zip && \
     mv /usr/local/gradle-$GRADLE_VERSION /usr/local/gradle && \
     ln -sf /usr/local/gradle/bin/gradle /usr/local/bin/gradle && \
     mkdir -p $HOME/.gradle && chmod -R a+rwX $HOME/.gradle
