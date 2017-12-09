@@ -140,4 +140,6 @@ else
   cp -v $HOME/*.war $DEPLOY_DIR 2> /dev/null
   cp -v $HOME/*.ear $DEPLOY_DIR 2> /dev/null
 fi
+chown -R 1001:1001 $DEPLOY_DIR
+chmod -R 777 $DEPLOY_DIR
 echo "--> S2I:assemble step end ..."
