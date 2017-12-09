@@ -26,12 +26,12 @@
     {
       "name": "MAVEN_ARGS_APPEND",
       "displayName": "Maven arguments to append",
-      "description": "Append Maven arguments",
+      "description": "Append Maven arguments"
     },
     {
       "name": "GRADLE_ARGS_APPEND",
       "displayName": "Gradle arguments to append",
-      "description": "Append Gradle arguments",
+      "description": "Append Gradle arguments"
     }
   ],
   "objects": [
