@@ -36,6 +36,9 @@ execute_maven_build()
   # to the $DEPLOY_DIR directory for later deployment
   cp -v $HOME/target/*.* $DEPLOY_DIR 2> /dev/null
 
+  # Run Maven clean
+  mvn clean
+
   # optionally clear the local maven repository after the build
   mcr=$(echo "${MAVEN_CLEAR_REPO}" | tr [:upper:] [:lower:])
   if [ "${mcr}" = "true" ]; then
@@ -69,6 +72,9 @@ execute_gradle_build()
   # Copy built artifacts (if any!) from the build/libs directory
   # to the $DEPLOY_DIR directory for later deployment
   cp -v $HOME/build/libs/*.* $DEPLOY_DIR 2> /dev/null
+
+  # Run Gradle clean
+  gradle clean
 
   # optionally clear the local gradle repository after the build
   gcr=$(echo "${GRADLE_CLEAR_REPO}" | tr [:upper:] [:lower:])

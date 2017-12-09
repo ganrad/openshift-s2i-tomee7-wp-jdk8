@@ -63,7 +63,8 @@ ENV TOMEE_VERSION 7.0.4
 RUN (curl -fSL https://repo.maven.apache.org/maven2/org/apache/tomee/apache-tomee/$TOMEE_VERSION/apache-tomee-$TOMEE_VERSION-plus.tar.gz | tar -zx -C /usr/local/tomee) \
         && mv /usr/local/tomee/apache-tomee-plus-$TOMEE_VERSION/* /usr/local/tomee \
 	&& rm -Rf /usr/local/tomee/apache-tomee-plus-$TOMEE_VERSION \
-	&& rm /usr/local/tomee/bin/*.bat
+	&& rm /usr/local/tomee/bin/*.bat \
+	&& rm -Rf /usr/local/tomee/webapps/*
 
 # Set Catalina home
 ENV CATALINA_HOME /usr/local/tomee
