@@ -34,7 +34,7 @@ execute_maven_build()
 
   # Copy built artifacts (if any!) from the target/ directory
   # to the $DEPLOY_DIR directory for later deployment
-  cp -rfv $HOME/target/*.* $DEPLOY_DIR 2> /dev/null
+  cp -v $HOME/target/*.* $DEPLOY_DIR 2> /dev/null
 
   # optionally clear the local maven repository after the build
   mcr=$(echo "${MAVEN_CLEAR_REPO}" | tr [:upper:] [:lower:])
