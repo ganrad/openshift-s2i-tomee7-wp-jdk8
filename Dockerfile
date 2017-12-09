@@ -73,7 +73,7 @@ ENV CATALINA_HOME /usr/local/tomee
 COPY ./s2i/bin/ /usr/libexec/s2i
 
 # Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:1001 /opt/app-root /usr/local/tomee
+RUN chown -R 1001:1001 /usr/local/tomee
 
 # This default user is created in the openshift/base-centos7 image
 USER 1001
