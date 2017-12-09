@@ -32,8 +32,8 @@ RUN yum -y update; \
 # Install OpenJDK 1.8, create required directories.
 RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel && \
     yum clean all -y && \
-    mkdir -p /usr/local/tomee && chmod -R a+rwX /usr/local/tomee && \
-    mkdir -p /opt/app-root/src && chmod -R a+rwX /opt/app-root/src
+    mkdir -p /usr/local/tomee && chmod -R 777 /usr/local/tomee && \
+    mkdir -p /opt/app-root/src && chmod -R 777 /opt/app-root/src
 
 # Install Maven 3.5.2
 ENV MAVEN_VERSION 3.5.2
@@ -41,7 +41,7 @@ RUN (curl -fSL http://ftp.wayne.edu/apache/maven/maven-3/$MAVEN_VERSION/binaries
     tar -zx -C /usr/local) && \
     mv /usr/local/apache-maven-$MAVEN_VERSION /usr/local/maven && \
     ln -sf /usr/local/maven/bin/mvn /usr/local/bin/mvn && \
-    mkdir -p $HOME/.m2 && chmod -R a+rwX $HOME/.m2
+    mkdir -p $HOME/.m2 && chmod -R 777 $HOME/.m2
 
 # Install Gradle 4.4
 ENV GRADLE_VERSION 4.4
@@ -50,7 +50,7 @@ RUN curl -fSL https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-b
     rm /tmp/gradle-$GRADLE_VERSION-bin.zip && \
     mv /usr/local/gradle-$GRADLE_VERSION /usr/local/gradle && \
     ln -sf /usr/local/gradle/bin/gradle /usr/local/bin/gradle && \
-    mkdir -p $HOME/.gradle && chmod -R a+rwX $HOME/.gradle
+    mkdir -p $HOME/.gradle && chmod -R 777 $HOME/.gradle
 
 # Set the location of the mvn and gradle binaries on search path
 ENV PATH=/usr/local/bin/mvn:/usr/local/bin/gradle:$PATH
@@ -63,8 +63,7 @@ ENV TOMEE_VERSION 7.0.4
 RUN (curl -fSL https://repo.maven.apache.org/maven2/org/apache/tomee/apache-tomee/$TOMEE_VERSION/apache-tomee-$TOMEE_VERSION-plus.tar.gz | tar -zx -C /usr/local/tomee) \
         && mv /usr/local/tomee/apache-tomee-plus-$TOMEE_VERSION/* /usr/local/tomee \
 	&& rm -Rf /usr/local/tomee/apache-tomee-plus-$TOMEE_VERSION \
-	&& rm /usr/local/tomee/bin/*.bat \
-        && mkdir -p /usr/local/tomee/webapps
+	&& rm /usr/local/tomee/bin/*.bat
 
 # Set Catalina home
 ENV CATALINA_HOME /usr/local/tomee

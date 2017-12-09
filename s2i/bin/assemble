@@ -78,6 +78,7 @@ execute_gradle_build()
 }
 
 echo "--> S2I:assemble step start ..."
+echo "--> Executing script as user=" + `id`
 
 # If the 'tomee7-plus-centos7' assemble script is executed with the '-h' flag, print the usage.
 if [[ "$1" == "-h" ]]; then
