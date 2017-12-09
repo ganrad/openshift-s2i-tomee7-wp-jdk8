@@ -6,16 +6,25 @@
   },
   "parameters": [
     {
-      "name": "SOURCE_REPOSITORY_URL",
+      "name": "APP_NAME",
+      "displayName": "Application Name",
+      "description": "Application name",
+      "value": ""
+    },
+    {
+      "name": "GIT_URI",
       "displayName": "Git Repository containing application source code",
       "description": "GIT URL pointing to the repository containing application source code for Java Web Application",
       "value": "https://github.com/ganrad/YourProject.git"
     },
     {
-      "name": "APP_NAME",
-      "displayName": "Application Name",
-      "description": "Application name",
-      "value": ""
+      "description": "Git branch/tag reference",
+      "name": "GIT_REF",
+      "value": "master"
+    },
+    {
+      "description": "Git Directory",
+      "name": "CONTEXT_DIR"
     },
     {
       "name": "BUILD_TYPE",
@@ -86,18 +95,18 @@
         "resources": {},
         "source": {
           "git": {
-            "uri": "${SOURCE_REPOSITORY_URL}",
-	    "ref": "master"
+            "uri": "${GIT_URI}",
+	    "ref": "${GIT_REF}"
           },
           "secrets": [],
+	  "contextDir": "${CONTEXT_DIR}",
           "type": "Git"
         },
         "strategy": {
           "sourceStrategy": {
             "from": {
               "kind": "ImageStreamTag",
-	      "name": "tomee7-plus-centos7:latest",
-	      "namespace": "openshift"
+	      "name": "tomee7-plus-centos7:latest"
             },
 	    "env": [
 		{
