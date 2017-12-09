@@ -1,4 +1,4 @@
-# s2i-java : ID:11-13-2017
+# s2i-tomee7 : ID:11-13-2017
 #
 # ID:12-05-2017:
 # Updated the following :
