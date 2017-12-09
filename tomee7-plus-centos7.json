@@ -97,7 +97,7 @@
             "from": {
               "kind": "ImageStreamTag",
 	      "name": "tomee7-plus-centos7:latest",
-	      "namespace": "myproject"
+	      "namespace": "openshift"
             },
 	    "env": [
 		{

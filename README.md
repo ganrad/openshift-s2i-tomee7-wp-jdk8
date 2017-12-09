@@ -95,10 +95,10 @@ This will run the *save-artifacts* script which includes the code to backup the 
 oc new-build --strategy=docker --name=tomee7-plus-centos7 https://github.com/ganrad/openshift-s2i-tomee7-wp-jdk8.git -n openshift
 ```
 
-2.  Download the *tomee7-plus-centos7.json* file from this repository and save it on your local machine where you have OpenShift CLI tools (oc binary) installed. Then use the command below to upload the template into the *openshift* namespace.
+2.  Download the *tomee7-plus-centos7.json* file from this repository and save it on your local machine where you have OpenShift CLI tools (oc binary) installed. Then use the command below to upload the template into your current project/namespace.
 
 ```
-oc create -f tomee7-plus-centos7.json -n openshift
+oc create -f tomee7-plus-centos7.json
 ```
 
 3.  Click on 'Add to Project' in OpenShift CP Web Console (UI) to create a new application and then select the 'tomee7-plus-centos7' template from the 'Browse' images tab.  You will then be presented with a form where you can specify 
