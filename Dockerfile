@@ -32,8 +32,7 @@ RUN yum -y update; \
 # Install OpenJDK 1.8, create required directories.
 RUN yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel && \
     yum clean all -y && \
-    mkdir -p /usr/local/tomee && chmod -R a+rwX /usr/local/tomee && \
-    mkdir -p /opt/app-root/src && chmod -R a+rwX /opt/app-root/src
+    mkdir -p /usr/local/tomee 
 
 # Install Maven 3.5.2
 ENV MAVEN_VERSION 3.5.2
@@ -69,12 +68,15 @@ RUN (curl -fSL https://repo.maven.apache.org/maven2/org/apache/tomee/apache-tome
 # Set Catalina home
 ENV CATALINA_HOME /usr/local/tomee
 
+# Drop the root user and make the content of /usr/local/tomee owned by user 1001
+RUN chown -R 1001:1001 $CATALINA_HOME /opt/app-root/src
+
+# Change perms on CATALINA_HOME to 777
+RUN chmod -R 777 $CATALINA_HOME /opt/app-root/src
+
 # Copy the S2I scripts to /usr/libexec/s2i, since openshift/base-centos7 image
 # sets io.openshift.s2i.scripts-url label that way, or update that label
 COPY ./s2i/bin/ /usr/libexec/s2i
-
-# Drop the root user and make the content of /opt/app-root owned by user 1001
-RUN chown -R 1001:1001 /usr/local/tomee
 
 # This default user is created in the openshift/base-centos7 image
 USER 1001
