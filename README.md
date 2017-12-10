@@ -89,13 +89,13 @@ This will run the *save-artifacts* script which includes the code to backup the 
 
 ## B. Using the Apache TomEE Plus S2I builder image in OpenShift CP
 
-1.  Use the command below to create the S2I builder image and save it in the integrated docker registry.  The command below creates the image in the *openshift* project to allow all projects to consume the image.
+1.  Use the command below to create the S2I builder image and save it in the integrated docker registry.  The command below tags the builder image to the current project in the integrated registry.
 
 ```
-oc new-build --strategy=docker --name=tomee7-plus-centos7 https://github.com/ganrad/openshift-s2i-tomee7-wp-jdk8.git -n openshift
+oc new-build --strategy=docker --name=tomee7-plus-centos7 https://github.com/ganrad/openshift-s2i-tomee7-wp-jdk8.git
 ```
 
-2.  Download the *tomee7-plus-centos7.json* file from this repository and save it on your local machine where you have OpenShift CLI tools (oc binary) installed. Then use the command below to upload the template into your current project/namespace.
+2.  Download the *tomee7-plus-centos7.json* template file from this repository and save it on your local machine where you have OpenShift CLI tools (oc binary) installed. Then use the command below to upload the template into your current project/namespace.
 
 ```
 oc create -f tomee7-plus-centos7.json
