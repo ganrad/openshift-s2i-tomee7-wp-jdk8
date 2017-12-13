@@ -3,6 +3,9 @@
 
 ## A. Creating the S2I builder image and testing it.
 
+**NOTE:**
+If you only want to use this S2I builder image to build and deploy your JEE Application on Apache TomEE Application Server, then you can safely skip this step and go to Step [B].
+
 ### Files and Directories  
 | File                   | Required? | Description                                                  |
 |------------------------|-----------|--------------------------------------------------------------|
